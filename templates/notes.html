@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block main %}
+
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="m-0">{{ page_title }} table for Participant : {{ participant.name }}</h6>
+
+
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center justify-content-center mb-0">
+                            <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Participant Name
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    Notes
+                                </th>
+
+                                <th>Actions</th>
+                                {#                                <th>Appointments And Notes</th>#}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for note in notes %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+
+                                            <div class="my-auto">
+                                                <h6 class="mb-0 text-sm">{{ note.participant.name }}</h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm font-weight-bold mb-0">{{ note.content }}</p>
+                                    </td>
+
+                                    <td class="align-middle">
+                                        <a type="button" rel="tooltip" title="Edit note"
+                                           id="{{ note.id }}"
+                                           note="{{ note.content }}"
+                                           class="btn btn-sm  btn-success btn-simple editnote"
+                                           data-toggle="modal"
+                                           data-target="#editModal">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a href="{{ url_for('delete_note',id=note.id ,pid=note.participant.id) }}"
+                                           rel="tooltip"
+                                           title="Remove"
+                                           class="btn btn-sm  btn-danger w-5 ">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+
+
+                                    </td>
+
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <form role="form" method="post" action="/edit_notes"
+                              enctype="multipart/form-data">
+                            <script>
+                                $(".editnote").on("click", function () {
+                                    let field = $(this)
+
+                                    let id = field.attr('id')
+
+                                    let note = field.attr('note')
+
+                                    document.getElementById('notes_p_id').value = id
+                                    document.getElementById('notes').value = note
+
+
+                                })
+                            </script>
+                            <input name="id" hidden id="notes_p_id">
+                            <label>Notes</label>
+                            <div class="mb-3">
+                            <textarea class="form-control" placeholder="Add Notes here....." name="notes" id="notes"
+                                      required></textarea>
+
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-sm bg-gradient-info w-50 mt-4 mb-0">Update
+                                    Note
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
