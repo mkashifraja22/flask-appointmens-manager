@@ -14,14 +14,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
 db.init_app(app)
 
 
-
 @app.route('/')
-def index1():
-    return jsonify({'success':"success"})
-
-
-
-@app.route('/index')
 def index():
     db.create_all()
     try:
