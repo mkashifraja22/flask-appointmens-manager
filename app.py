@@ -184,8 +184,9 @@ def participants():
         user = User.query.filter_by(email=email).first()
         projects = Project.query.filter_by(user=user)
         participants = Participant.query.join(Participant.project).filter(Project.user == user).all()
+        groups = Group.query.filter_by(user=user)
         return render_template("all_participants.html", participants=participants,
-                               page_title='Participants', user=user, projects=projects)
+                               page_title='Participants', user=user, projects=projects, groups=groups)
 
     return redirect(url_for("index"))
 
@@ -202,12 +203,18 @@ def add_participant():
             print("Dir allready exsits")
         project_id = request.form['pid']
         project = Project.query.filter_by(id=project_id).first()
+        print(request.form['participant_id'])
 
         participant = Participant.get_or_create(
+            pid=request.form['participant_id'],
             name=request.form['name'],
             phone=request.form['phone'],
             email=request.form['email'],
             address=request.form['address'],
+            nk_name=request.form['nk_name'],
+            nk_phone=request.form['nk_phone'],
+            nk_email=request.form['nk_email'],
+            nk_address=request.form['nk_address'],
             project=project
         )
         files = request.files.getlist("document")
@@ -235,11 +242,23 @@ def edit_participant():
         name = request.form.get('name1'),
         phone = request.form['phone'],
         email = request.form['email'],
+        pid = request.form.get('participant_id'),
         address = request.form['address'],
+        nk_name = request.form['nk_name'],
+        nk_phone = request.form['nk_phone'],
+        nk_email = request.form['nk_email'],
+        nk_address = request.form['nk_address'],
+
         participant.name = name[0]
         participant.address = address[0]
         participant.phone = phone[0]
         participant.email = email[0]
+
+        participant.nk_name = nk_name[0]
+        participant.nk_address = nk_address[0]
+        participant.nk_phone = nk_phone[0]
+        participant.nk_email = nk_email[0]
+        participant.pid = pid[0]
 
         files = request.files.getlist("document")
         if len(files) > 0:
@@ -262,13 +281,25 @@ def edit_participant_():
         participant_id = request.form['id']
         participant = Participant.query.get(participant_id)
         name = request.form.get('name1'),
+        pid = request.form.get('participant_id'),
         phone = request.form['phone'],
         email = request.form['email'],
         address = request.form['address'],
+        nk_name = request.form['nk_name'],
+        nk_phone = request.form['nk_phone'],
+        nk_email = request.form['nk_email'],
+        nk_address = request.form['nk_address'],
+
         participant.name = name[0]
         participant.address = address[0]
         participant.phone = phone[0]
         participant.email = email[0]
+
+        participant.nk_name = nk_name[0]
+        participant.nk_address = nk_address[0]
+        participant.nk_phone = nk_phone[0]
+        participant.nk_email = nk_email[0]
+        participant.pid = pid[0]
 
         files = request.files.getlist("document")
         if len(files) > 0:
@@ -407,7 +438,7 @@ def participant_appointments(id):
         email = session["email"]
         user = User.query.filter_by(email=email).first()
         participant = Participant.query.filter_by(id=id).first()
-        appointments = Appointment.query.filter_by(participant=participant)
+        appointments = Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc())
         return render_template("appointments.html", appointments=appointments, participant=participant,
                                page_title='Appointments', user=user)
 

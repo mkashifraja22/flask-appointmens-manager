@@ -37,7 +37,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     start_date = db.Column(db.DateTime, default=datetime.utcnow)
-    end_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref='assigned_projects', lazy=True)
     users = db.relationship('User', secondary=project_user_association, backref=db.backref('projects', lazy='dynamic'))
@@ -68,6 +68,11 @@ class Participant(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     project = db.relationship('Project', backref=db.backref('participants', lazy=True))
 
+    nk_name = db.Column(db.String(100), nullable=False)
+    nk_address = db.Column(db.String(200), nullable=False)
+    nk_phone = db.Column(db.String(15), nullable=False)
+    nk_email = db.Column(db.String(100), nullable=False)
+
     def __repr__(self):
         return f'<Participant {self.name}>'
 
@@ -79,8 +84,6 @@ class Participant(db.Model):
         else:
             instance = cls(**kwargs)
             db.session.add(instance)
-            db.session.commit()
-            instance.pid = f'P_ID_0{instance.id}'
             db.session.commit()
             return instance
 
@@ -106,8 +109,6 @@ class Document(db.Model):
             db.session.add(instance)
             db.session.commit()
             return instance
-
-
 
 
 class Appointment(db.Model):
@@ -162,14 +163,15 @@ g_p_association = db.Table(
     db.Column('participant_id', db.Integer, db.ForeignKey('participant.id'))
 )
 
+
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref='assigned_groups', lazy=True)
-    participants = db.relationship('Participant', secondary=g_p_association, backref=db.backref('groups', lazy='dynamic'))
-
+    participants = db.relationship('Participant', secondary=g_p_association,
+                                   backref=db.backref('groups', lazy='dynamic'))
 
     def __repr__(self):
         return f'<Group {self.id}>'
