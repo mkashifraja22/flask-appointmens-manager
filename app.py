@@ -36,9 +36,16 @@ def index():
 def add_project():
     user = User.query.filter_by(email=session['email']).first()
     new_values = request.form.to_dict()
-    start_date = datetime.strptime(new_values['start_date'], '%Y-%m-%d').date()
-    end_date = datetime.strptime(new_values['end_date'], '%Y-%m-%d').date()
-    project = Project.get_or_create(name=new_values['name'], start_date=end_date, end_date=start_date, user_id=user.id)
+    project = Project.get_or_create(name=new_values['name'], user_id=user.id)
+    if new_values['start_date']:
+        start_date = datetime.strptime(new_values['start_date'], '%Y-%m-%d').date()
+        project.start_date = start_date
+
+    if new_values['end_date']:
+        end_date = datetime.strptime(new_values['end_date'], '%Y-%m-%d').date()
+        project.end_date = end_date
+    db.session.commit()
+
     return redirect(url_for("index"))
 
 
@@ -121,8 +128,14 @@ def edit_project():
         pid = request.form['id']
         project = Project.query.get(pid)
         project.name = request.form['name']
-        project.start_date = request.form['start_date']
-        project.end_date = request.form['end_date']
+
+        if request.form['start_date']:
+            start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d').date()
+            project.start_date = start_date
+
+        if request.form['end_date']:
+            end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d').date()
+            project.end_date = end_date
         db.session.commit()
         return redirect(url_for('index'))
 

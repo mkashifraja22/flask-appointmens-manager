@@ -53,7 +53,8 @@
                                         {{ project.user.username }}
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{{ url_for('project_participants',pid=project.id) }}" rel="tooltip" title="View Participants"
+                                        <a href="{{ url_for('project_participants',pid=project.id) }}" rel="tooltip"
+                                           title="View Participants"
                                            class="btn btn-sm btn-info btn-simple">
                                             <i class="fa fa-users"></i>
                                         </a>
@@ -105,14 +106,14 @@
                             <div class="mb-3">
                                 <input type="date" class="form-control" placeholder="Start Date"
                                        aria-label="date" aria-describedby="password-addon" name="start_date"
-                                       >
+                                >
                             </div>
 
                             <label>End Date</label>
                             <div class="mb-3">
                                 <input type="date" class="form-control" placeholder="End Date"
                                        aria-label="date" aria-describedby="password-addon" name="end_date"
-                                       required>
+                                >
                             </div>
 
 
@@ -152,15 +153,21 @@
                                     let sd = field.attr('start_date')
                                     let ed = field.attr('end_date')
                                     let id = field.attr('id')
-                                    const dateObjst = new Date(sd);
-                                    const start_date = dateObjst.toISOString().split('T')[0];
-                                    document.getElementById('id').value = id
-                                    const dateObj = new Date(ed);
-                                    const end_date = dateObj.toISOString().split('T')[0];
+                                    if (sd != 'None') {
+                                        const dateObjst = new Date(sd);
+                                        const start_date = dateObjst.toISOString().split('T')[0];
+                                        document.getElementById('start_date').value = start_date
+                                    }
+                                    if (ed != 'None') {
+                                        const dateObj = new Date(ed);
+                                        const end_date = dateObj.toISOString().split('T')[0];
+                                        document.getElementById('end_date').value = end_date
+                                    }
+
+
+
                                     document.getElementById('id').value = id
                                     document.getElementById('name').value = name
-                                    document.getElementById('start_date').value = start_date
-                                    document.getElementById('end_date').value = end_date
 
 
                                 })
@@ -177,14 +184,14 @@
                                 <input type="date" class="form-control" placeholder="Start Date"
                                        aria-label="date" aria-describedby="password-addon" name="start_date"
                                        id="start_date"
-                                       required>
+                                       >
                             </div>
 
                             <label>End Date</label>
                             <div class="mb-3">
                                 <input type="date" class="form-control" placeholder="End Date"
                                        aria-label="date" aria-describedby="password-addon" name="end_date" id="end_date"
-                                       required>
+                                       >
                             </div>
 
 

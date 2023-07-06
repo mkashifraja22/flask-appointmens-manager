@@ -36,8 +36,8 @@ project_user_association = db.Table(
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    start_date = db.Column(db.DateTime, default=datetime.utcnow)
-    end_date = db.Column(db.DateTime, default=datetime.utcnow)
+    start_date = db.Column(db.DateTime, nullable=True)
+    end_date = db.Column(db.DateTime, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref='assigned_projects', lazy=True)
     users = db.relationship('User', secondary=project_user_association, backref=db.backref('projects', lazy='dynamic'))
@@ -60,18 +60,18 @@ class Project(db.Model):
 class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
-    phone = db.Column(db.String(15), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
+    address = db.Column(db.String(200), nullable=True)
+    phone = db.Column(db.String(15), nullable=True)
+    email = db.Column(db.String(100), nullable=True)
     pid = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     project = db.relationship('Project', backref=db.backref('participants', lazy=True))
 
-    nk_name = db.Column(db.String(100), nullable=False)
-    nk_address = db.Column(db.String(200), nullable=False)
-    nk_phone = db.Column(db.String(15), nullable=False)
-    nk_email = db.Column(db.String(100), nullable=False)
+    nk_name = db.Column(db.String(100), nullable=True)
+    nk_address = db.Column(db.String(200), nullable=True)
+    nk_phone = db.Column(db.String(15), nullable=True)
+    nk_email = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
         return f'<Participant {self.name}>'
