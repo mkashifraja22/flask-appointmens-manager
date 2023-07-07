@@ -468,7 +468,7 @@ def appointments():
         appointments = []
         for project in user.assigned_projects:
             for participant in project.participants:
-                appointments.extend(participant.appointments)
+                appointments.extend(Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()))
         return render_template("all_appointment.html", appointments=appointments, participants=participants,
                                page_title='Appointments', user=user)
 
