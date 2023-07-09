@@ -416,6 +416,7 @@ def edit_participant_appointment():
     admin = request.args.get("admin")
     if request.method == "POST":
         checkbox = request.form.get("checkbox")
+        print(checkbox)
         date = request.form.get("date")
         time_ = request.form.get("time")
         participant_id = request.form.get("participant_id")
@@ -440,6 +441,9 @@ def edit_participant_appointment():
             appointment.appointment_date = date
             appointment.appointment_time = time
             db.session.commit()
+        if checkbox !='on':
+            appointment.next_appointment_date = None
+            db.session.commit()
         if admin:
             return redirect(url_for('appointments'))
         return redirect(f'/participant_appointments/{participant_id}')
@@ -451,7 +455,7 @@ def participant_appointments(id):
         email = session["email"]
         user = User.query.filter_by(email=email).first()
         participant = Participant.query.filter_by(id=id).first()
-        appointments = Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc())
+        appointments = Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()).all()
         return render_template("appointments.html", appointments=appointments, participant=participant,
                                page_title='Appointments', user=user)
 
@@ -468,7 +472,7 @@ def appointments():
         appointments = []
         for project in user.assigned_projects:
             for participant in project.participants:
-                appointments.extend(Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()))
+                appointments.extend(Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()).all())
         return render_template("all_appointment.html", appointments=appointments, participants=participants,
                                page_title='Appointments', user=user)
 

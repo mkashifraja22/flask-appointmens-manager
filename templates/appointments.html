@@ -42,7 +42,18 @@
                                         <div class="d-flex px-2">
 
                                             <div class="my-auto">
-                                                <h6 class="mb-0 text-sm">{{ ap.participant.name }}</h6>
+                                                <a type="button" rel="tooltip" title="Participants" data-toggle="modal"
+                                                   data-target="#paricipant_table"
+                                                   data-name="{{ participant.name }}"
+                                                   data-address="{{ participant.address }}"
+                                                   data-phone="{{ participant.phone }}"
+                                                   data-email="{{ participant.email }}"
+                                                   data-pid="{{ participant.pid }}"
+                                                   data-nk-name="{{ participant.nk_name }}"
+                                                   data-nk-address="{{ participant.nk_address }}"
+                                                   data-nk-phone="{{ participant.nk_phone }}"
+                                                   data-nk-email="{{ participant.nk_email }}" class="view_participant">
+                                                    <h6 class="mb-0 text-sm" style="color: #0d6efd">{{ ap.participant.name }}</h6></a>
                                             </div>
                                         </div>
                                     </td>
@@ -174,7 +185,8 @@
 
 
                             <div class="text-center">
-                                <button type="submit" class="btn btn-sm bg-gradient-info w-50 mt-4 mb-0">Update Appointment
+                                <button type="submit" class="btn btn-sm bg-gradient-info w-50 mt-4 mb-0">Update
+                                    Appointment
                                 </button>
                             </div>
                         </form>
@@ -191,6 +203,38 @@
         </div>
     </div>
 
+
+
+    <div class="modal fade" id="paricipant_table" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Participant details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-body">
+                        <table id="participant-table">
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </table>
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -321,7 +365,7 @@
         });
     </script>
 
-      <script>
+    <script>
         window.addEventListener('DOMContentLoaded', function () {
             var checkbox = document.getElementById('flexSwitchCheckDefault1');
             var addressInput = document.getElementById('addreshide1');
@@ -335,6 +379,35 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        $(".view_participant").on("click", function () {
+            let field = $(this)
+            let name = field.data('name');
+            let address = field.data('address');
+            let phone = field.data('phone');
+            let email = field.data('email');
+            let pid = field.data('pid');
+            let nkName = field.data('nk-name');
+            let nkAddress = field.data('nk-address');
+            let nkPhone = field.data('nk-phone');
+            let nkEmail = field.data('nk-email');
+            let table = $("#participant-table");
+            table.empty(); // Clear previous table content
+
+            // Add rows dynamically to the table
+            table.append('<tr><td>Name : </td><td>' + name + '</td></tr>');
+            table.append('<tr><td>Address :</td><td>' + address + '</td></tr>');
+            table.append('<tr><td>Phone :</td><td>' + phone + '</td></tr>');
+            table.append('<tr><td>Email :</td><td>' + email + '</td></tr>');
+            table.append('<tr><td>PID :</td><td>' + pid + '</td></tr>');
+            table.append('<tr><td>Next Kin Name :</td><td>' + nkName + '</td></tr>');
+            table.append('<tr><td>Next Kin Address:</td><td>' + nkAddress + '</td></tr>');
+            table.append('<tr><td>Next Kin Phone :</td><td>' + nkPhone + '</td></tr>');
+            table.append('<tr><td>Next Kin Email :</td><td>' + nkEmail + '</td></tr>');
+
+        })
     </script>
 {% endblock %}
 
