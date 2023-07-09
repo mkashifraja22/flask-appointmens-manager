@@ -8,6 +8,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from utils import doc_table
 import csv
 
+today = datetime.today().date()
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///example.sqlite"
@@ -458,7 +460,12 @@ def participant_appointments(id):
         email = session["email"]
         user = User.query.filter_by(email=email).first()
         participant = Participant.query.filter_by(id=id).first()
-        appointments = Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()).all()
+        # appointments = Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()).all()
+
+
+        appointments = Appointment.query.filter_by(participant=participant).order_by(
+            Appointment.appointment_date < today, Appointment.appointment_date.asc()).all()
+
         return render_template("appointments.html", appointments=appointments, participant=participant,
                                page_title='Appointments', user=user)
 
@@ -475,7 +482,9 @@ def appointments():
         appointments = []
         for project in user.assigned_projects:
             for participant in project.participants:
-                appointments.extend(Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()).all())
+                appointments.extend(Appointment.query.filter_by(participant=participant).order_by(
+            Appointment.appointment_date < today, Appointment.appointment_date.asc()).all()
+)
         return render_template("all_appointment.html", appointments=appointments, participants=participants,
                                page_title='Appointments', user=user)
 
