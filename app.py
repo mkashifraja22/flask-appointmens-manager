@@ -21,8 +21,11 @@ def index():
         if session["is_logged_in"] == True:
             email = session["email"]
             user = User.query.filter_by(email=email).first()
-            p = Project.query.filter_by(user=user)
-            return render_template("project.html", projects=p, page_title='Projects', user=user)
+            if user:
+                p = Project.query.filter_by(user=user)
+                return render_template("project.html", projects=p, page_title='Projects', user=user)
+            else:
+                return render_template("index.html")
 
         else:
             return render_template("index.html")
