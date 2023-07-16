@@ -1,6 +1,6 @@
 import os
 import secrets
-from datetime import datetime, time
+from datetime import datetime, time,date
 from flask import Flask, render_template, url_for, request, redirect, session, flash, current_app, \
     render_template_string, jsonify, send_from_directory
 from models import db, User, Project, Participant, Document, Appointment, Note, Group
@@ -446,7 +446,7 @@ def edit_participant_appointment():
             appointment.appointment_date = date
             appointment.appointment_time = time
             db.session.commit()
-        if checkbox !='on':
+        if checkbox != 'on':
             appointment.next_appointment_date = None
             db.session.commit()
         if admin:
@@ -462,7 +462,6 @@ def participant_appointments(id):
         participant = Participant.query.filter_by(id=id).first()
         # appointments = Appointment.query.filter_by(participant=participant).order_by(Appointment.appointment_date.asc()).all()
 
-
         appointments = Appointment.query.filter_by(participant=participant).order_by(
             Appointment.appointment_date < today, Appointment.appointment_date.asc()).all()
 
@@ -474,6 +473,7 @@ def participant_appointments(id):
 
 @app.route("/appointments", methods=["POST", "GET"])
 def appointments():
+    today = date.today()
     if session["is_logged_in"] == True:
         email = session["email"]
         user = User.query.filter_by(email=email).first()
@@ -483,8 +483,10 @@ def appointments():
         for project in user.assigned_projects:
             for participant in project.participants:
                 appointments.extend(Appointment.query.filter_by(participant=participant).order_by(
-            Appointment.appointment_date < today, Appointment.appointment_date.asc()).all()
-)
+                    Appointment.appointment_date < today, Appointment.appointment_date.asc()).all()
+                                    )
+        appointments = sorted(appointments, key=lambda app: abs(app.appointment_date - today))
+
         return render_template("all_appointment.html", appointments=appointments, participants=participants,
                                page_title='Appointments', user=user)
 
